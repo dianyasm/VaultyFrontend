@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { getUsers } from '../services/userService'
+import { UserService } from '../services/userService'
 
 interface User{
   id: number
@@ -19,7 +19,7 @@ function UserList() {
   useEffect(()=>{
     async function call(){
       try{
-        const userList = await getUsers()
+        const userList = await UserService.getAll()
         setUsers(userList)      
       }catch(error){
         const msg = error instanceof Error ? error.message : 'Error desconocido'

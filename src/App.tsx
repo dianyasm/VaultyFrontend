@@ -10,16 +10,17 @@ import OffertList from './pages/OfferList'
 import OffertForm from './pages/OfferForm'
 import OfferDetail from './pages/OfferDetail'
 import { Toaster } from 'react-hot-toast'
+import Footer from "./components/Footer";
 
 function App() {
 
   return (
     <>
       <BrowserRouter>
-        <div className='flex flex-col h-screen'>
+        <div className=''>
           <Navbar />
-          <Toaster position="top-center" reverseOrder={false}/>
-          <div className='container mx-auto flex grow justify-center items-center'>
+          <Toaster position="top-center" reverseOrder={false} />
+          <div className=' flex grow justify-center items-center'>
             <Routes>
               <Route path='/' element={<Home />} />
               <Route path='/login' element={<Login />} />
@@ -32,6 +33,7 @@ function App() {
               <Route path="/offers/edit/:id" element={<OffertForm />} />
             </Routes>
           </div>
+          <Footer />
         </div>
       </BrowserRouter>
     </>
