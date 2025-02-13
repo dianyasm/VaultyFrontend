@@ -1,6 +1,6 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { AuthService } from "../services/authService";
-import User from "../models/User";
+import User from "../models/User"
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import ErrorMsgData from "../utils/ErrorMsgData";
