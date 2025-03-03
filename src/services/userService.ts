@@ -23,4 +23,24 @@ export class UserService {
     });
 
   }
+
+  static async getUserFavorites() {
+    return await fetchAPI(API_URL_BASE + "/users/favorites", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+  }
+
+  static async getUserWatchlist() {
+    return await fetchAPI(API_URL_BASE + "/users/watchlist", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+  }
 }

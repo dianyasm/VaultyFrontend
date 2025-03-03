@@ -1,11 +1,11 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import Offer from "../models/Offer";
-import { OfferService } from "../services/offer.services";
+import Series from "../models/Series";
+import { SeriesService } from "../services/series.services";
 import { Link, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
-function OfferList() {
-  const [offers, setOffers] = useState<Offer[]>();
+function SeriesList() {
+  const [series, setSeries] = useState<Series[]>();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   //const [titleQuery, setTitleQuery] = useState(null)
@@ -14,8 +14,8 @@ function OfferList() {
   const titleQuery = queryParams.get("title") || "";
 
   useEffect(() => {
-    OfferService.search(titleQuery)
-      .then(setOffers)
+    SeriesService.search(titleQuery)
+      .then(setSeries)
       .catch((error) => setError(error.message))
       .finally(() => setLoading(false));
   }, [titleQuery]);
@@ -26,13 +26,13 @@ function OfferList() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!window.confirm("¿Estás seguro que quieres borrar esta oferta?"))
+    if (!window.confirm("¿Estás seguro que quieres borrar esta serie?"))
       return;
 
     try {
-      await OfferService.delete(id);
-      setOffers(offers?.filter((offer) => offer.id !== id));
-      toast.success("Oferta borrada correctamente!");
+      await SeriesService.delete(id);
+      setSeries(series?.filter((series) => series.id !== id));
+      toast.success("Serie borrada correctamente!");
     } catch (error) {
       setError(error instanceof Error ? error.message : "Error desconocido");
     }
@@ -41,13 +41,13 @@ function OfferList() {
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-4xl font-extrabold dark:text-white">
-        Lista de ofertas
+        Lista de series
       </h2>
       <Link
         to="/offers/new"
         className="text-white w-fit bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
       >
-        Añadir nueva oferta
+        Añadir nueva serie
       </Link>
 
       <label
@@ -91,26 +91,26 @@ function OfferList() {
 
       {loading && <p>Loading...</p>}
       {error && <p>{error}</p>}
-      {offers?.length === 0 && <p>No hay ofertas disponibles</p>}
+      {series?.length === 0 && <p>No hay series introducidas</p>}
       <div className="flex flex-wrap flex-row gap-4 items-center justify-center">
 
-      {offers?.map((offer) => (
-        <div key={offer.id} className="">
+      {series?.map((series) => (
+        <div key={series.id} className="">
           <div
   
             className="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
           >
             <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-              {offer.title}
+              {series.title}
             </h5>
             <p className="font-normal text-gray-700 dark:text-gray-400">
-              {offer.description}
+              {series.description}
             </p>
             <div className="flex items-center justify-center gap-4 mt-4">
 
-            <Link className="px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" to={`/offers/${offer.id}`}>Ver</Link>
-            <Link className="px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" to={`/offers/edit/${offer.id}`}>Editar</Link>
-            <button className="px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={() => handleDelete(offer.id)}>Borrar</button>
+            <Link className="px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" to={`/series/${series.id}`}>Ver</Link>
+            <Link className="px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" to={`/series/edit/${series.id}`}>Editar</Link>
+            <button className="px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={() => handleDelete(series.id)}>Borrar</button>
             </div>
           </div>
         </div>
@@ -121,4 +121,4 @@ function OfferList() {
   );
 }
 
-export default OfferList;
+export default SeriesList;

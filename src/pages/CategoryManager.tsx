@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useState } from "react"
-import { CategoryService } from "../services/categoryService"
-import Category from "../models/Category"
+import { CategoryService } from "../services/genreService"
+import Category from "../models/Genre"
 
 interface CategoryFormProps{
     onSubmit: (e:FormEvent, name: string) => void

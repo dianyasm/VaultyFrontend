@@ -2,8 +2,8 @@ import { fetchAPI } from "../utils/FetchAPI"
 const API_URL_BASE = import.meta.env.VITE_API_URL_BASE
 
 export class RateService {
-    static async getMyRate(offerId: number) {
-        return await fetchAPI(API_URL_BASE+`/offers/${offerId}/myRate`, {
+    static async getMyRate(seriesId: number) {
+        return await fetchAPI(API_URL_BASE+`/serise/${seriesId}/myRate`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -12,8 +12,8 @@ export class RateService {
         })
     }
 
-    static async getGlobalRate(offerId: number) {
-        return await fetchAPI(API_URL_BASE+`/offers/${offerId}/rate`, {
+    static async getGlobalRate(seriesId: number) {
+        return await fetchAPI(API_URL_BASE+`/series/${seriesId}/rate`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -22,8 +22,8 @@ export class RateService {
         })
     }
 
-    static async rate(offerId: number, value: number) {
-        return await fetchAPI(API_URL_BASE+`/offers/${offerId}/rate`, {
+    static async rate(seriesId: number, value: number) {
+        return await fetchAPI(API_URL_BASE+`/offers/${seriesId}/rate`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

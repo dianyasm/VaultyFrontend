@@ -4,30 +4,30 @@ import { RateService } from "../services/rate.services";
 import { IconStar, IconStarFilled } from "@tabler/icons-react";
 
 interface StarRatingProps {
-  idOffer: number;
+  idSerie: number;
   /* value: number;
     onRate?: (rating: number) => void; // Callback al seleccionar una calificación
     interactive?: boolean; */
 }
 
-export function StarRating({ idOffer }: StarRatingProps) {
+export function StarRating({ idSerie }: StarRatingProps) {
   const [averageRating, setAverageRating] = useState<number | null>(null);
   const [totalRatings, setTotalRatings] = useState<number>(0);
   const [myRate, setMyRate] = useState<number>(0);
 
   useEffect(() => {
     //if(!id) return
-     RateService.getGlobalRate(idOffer).then((data) => {
+     RateService.getGlobalRate(idSerie).then((data) => {
       console.log("rate", data);
       setAverageRating(data.averageRating);
       setTotalRatings(data.totalRatings);
     }); 
 
-    RateService.getMyRate(idOffer).then((rate) => setMyRate(rate.value));
-  }, [idOffer, myRate]);
+    RateService.getMyRate(idSerie).then((rate) => setMyRate(rate.value));
+  }, [idSerie, myRate]);
 
   const handleRate =async(rating: number) => {
-    await RateService.rate(idOffer, rating);
+    await RateService.rate(idSerie, rating);
     setMyRate(rating);
   }
 

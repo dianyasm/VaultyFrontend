@@ -1,10 +1,10 @@
-import Category from "../models/Category"
+import Genre from "../models/Genre"
 import { fetchAPI } from "../utils/FetchAPI"
 const API_URL_BASE = import.meta.env.VITE_API_URL_BASE
 
-export class CategoryService {
+export class GenreService {
     static async getAll() {
-        return await fetchAPI(API_URL_BASE+'/categories?',{
+        return await fetchAPI(API_URL_BASE+'/genre?',{
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -14,7 +14,7 @@ export class CategoryService {
     }
 
     static async getById(id:number) {
-        return await fetchAPI(API_URL_BASE+'/categories/'+id,{
+        return await fetchAPI(API_URL_BASE+'/genre/'+id,{
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -23,29 +23,29 @@ export class CategoryService {
         })
     }
 
-    static async create(category: Partial<Category>) {
-        return await fetchAPI(API_URL_BASE+'/categories', {
+    static async create(genre: Partial<Genre>) {
+        return await fetchAPI(API_URL_BASE+'/genre/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(category),
+            body: JSON.stringify(genre),
             credentials: 'include'
         })
     }
 
-    static async update(id:number, category: Partial<Category>) {
-        return await fetchAPI(API_URL_BASE+'/categories/'+id, {
+    static async update(id:number, genre: Partial<Genre>) {
+        return await fetchAPI(API_URL_BASE+'/genre/'+id, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(category),
+            body: JSON.stringify(genre),
             credentials: 'include'
         })
     }
     static async delete(id: number){
-        return await fetchAPI(API_URL_BASE+'/categories/'+id, {
+        return await fetchAPI(API_URL_BASE+'/genre/'+id, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
