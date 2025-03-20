@@ -3,9 +3,8 @@ export default interface Series {
     title: string;
     description?: string;
     active: boolean;
-    contactEmail?: string;
-    location?: string;
-    published: string;
-    expired: string;
     genreId?: number | null;
+    genre?: string;
+    episodes?: number;
+    seasons?:number;
 }

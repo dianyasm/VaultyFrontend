@@ -2,7 +2,6 @@ import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import Series from '../models/Series'
 import { SeriesService } from '../services/series.services'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Temporal } from 'temporal-polyfill'
 import toast from 'react-hot-toast'
 import { GenreService } from '../services/genreService'
 import Genre from '../models/Genre'
@@ -10,110 +9,127 @@ import InputForm from '../components/InputForm'
 import ErrorMsgData from '../utils/ErrorMsgData'
 import TextAreaInputForm from '../components/TextAreaInputForm'
 
-// - formulario de creación de 1 oferta
-// -- Actualizar una oferta
 
+function SeriesForm() {
 
-const SeriesForm = () => {
-  const { id } = useParams(); // Obtiene el id de la URL
-  const [series, setSeries] = useState<Series | null>(null); // Estado para la serie
-  const [genres, setGenres] = useState<Genre[]>([]); // Estado para géneros
-  const [form, setForm] = useState<Series>({
-    title: "",
-    description: "",
-    genre: "",
+  //const threeMonthLater = new Date( new Date().setMonth(new Date().getMonth() + 3) )
+  //                    .toISOString().slice(0,16)
+  const [form, setForm] = useState<Partial<Series>>({
+    title: '',
+    description: '',
     active: true,
-    contactEmail: "",
-    location: "",
-    published: Temporal.Now.plainDateISO().toString(),
-    expired: Temporal.PlainDate.from("2025-12-31").toString(),
-  });
+    episodes: 0,
+    seasons: 0,
+    genreId: undefined
+  })
+  const [genres, setGenres] = useState<Genre[]>()
 
-  const [errorMsg, setErrorMsg] = useState<ErrorMsgData | null>(null); // Estado para errores
-  const navigate = useNavigate();
+  const {id} = useParams()
+  const [errors, setErrors] = useState<Record<string, string | undefined>>({});
 
-  // Cargar los géneros y la serie si existe un id
-  useEffect(() => {
-    GenreService.getAll().then(setGenres);
+  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
 
-    if (id) {
-      SeriesService.getById(Number(id)).then(setSeries);
+  useEffect(()=>{
+    if(id){
+      
+      setLoading(true)
+      SeriesService.getById(Number(id))
+      .then(data => setForm({
+        ...data,
+      }))
+      .catch((error) => setErrors(error.message))
+      .finally(()=>setLoading(false))
+
     }
-  }, [id]);
+  }, [id])
 
-  // Manejar el envío del formulario
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    const newSeries = { ...form, id: Number(id) };
-    SeriesService.save(newSeries).then(() => {
-      toast.success(id ? "Serie actualizada con éxito!" : "Serie añadida con éxito!");
-      navigate("/dashboard");
-    }).catch((error) => toast.error("Error al guardar la serie"));
-  };
+  useEffect(()=>{
+    GenreService.getAll()
+      .then(setGenres)
+      .catch(error => setErrors(error.message))
+  },[])
 
-  // Manejar los cambios en los campos del formulario
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const handleSubmit=async (e: FormEvent) =>{
+    try{
+      setLoading(true)
+      setErrors({});
+      e.preventDefault()
+      const formData = {
+        ...form,
+        genreId: form.genreId ? Number(form.genreId) : null,
+      }
+      console.log(formData)
+      if(id) await SeriesService.update(Number(id), formData)
+        else await SeriesService.create(formData)
+      toast.success('Serie guardada correctamente!')
+      navigate('/series')
+    }catch(error){
+      toast.error('Error al guardar la serie!')
+       if(Array.isArray(error)){
+              const errorObj: Record<string, string> = error?.reduce((acc: Record<string, string>, err: unknown) => {
+                const errorDetail = err as ErrorMsgData;
+                acc[errorDetail.path] = errorDetail.msg;
+                return acc;
+              }, {});
+              setErrors(errorObj);
+            }else if(error instanceof Error){
+              const msg = error instanceof Error ? error.message : "Error desconocido"
+              setErrors({message: msg || 'Error desconocido'});
+            }else{
+              setErrors({message: error as string || 'Error desconocido'});
+            }
+    }finally{
+      setLoading(false)
+    }
+  }
+
+  const handleChange = (e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>{
+    const {value, name} = e.target
+    //if(name==='idCategory') valueNew = Number(value) 
+    setForm({ ...form, [name]:value,  }) 
+  }
+
+  const handleChangeCheckbox = (e:ChangeEvent<HTMLInputElement>) =>{
+    const {checked, name} = e.target
+    setForm({ ...form, [name]:checked,  }) 
+  }
+
+  if(loading) return <p>Loading...</p>
 
   return (
-    <form onSubmit={handleSubmit} className="p-6 bg-white rounded-lg shadow-lg">
-      <div className="mb-4">
-        <InputForm
-          label="Título"
-          name="title"
-          value={form.title}
-          onChange={handleChange}
-          placeholder="Escribe el título de la serie"
-          required={true}
-        />
-        {errorMsg?.title && <span className="text-red-500">{errorMsg.title}</span>}
-      </div>
+    <div className='text-white flex flex-col'>
+      <h2 className="text-4xl font-extrabold dark:text-white">{id?'Edición de oferta':'Inserción de nueva oferta'}</h2>
 
-      <div className="mb-4">
-        <TextAreaInputForm
-          label="Descripción"
-          name="description"
-          value={form.description}
-          onChange={handleChange}
-          placeholder="Escribe una breve descripción de la serie"
-          required={true}
-        />
-        {errorMsg?.description && <span className="text-red-500">{errorMsg.description}</span>}
-      </div>
+      <form className="max-w-sm mx-auto min-w-sm" onSubmit={handleSubmit}>
+      
+      <InputForm text="Título" name="title" value={form.title || ''} handleChange={handleChange} error={errors.title} /> 
+      <TextAreaInputForm type="textarea" rows={6} text="Descripción" name="description" value={form.description || ''} handleChange={handleChange} error={errors.description} /> 
+      
+      <InputForm type="checkbox" text="Activa" name="active" checked={form.active} handleChange={handleChangeCheckbox} error={errors.active} /> 
 
-      <div className="mb-4">
-        <label htmlFor="genre" className="block text-sm font-medium text-gray-700">Género</label>
-        <select
-          id="genre"
-          name="genre"
-          value={form.genre}
-          onChange={handleChange}
-          className="mt-2 w-full p-2 border rounded-md"
-          required
-        >
-          {genres.map(genre => (
-            <option key={genre.id} value={genre.name}>{genre.name}</option>
-          ))}
-        </select>
-        {errorMsg?.genre && <span className="text-red-500">{errorMsg.genre}</span>}
-      </div>
+      <label htmlFor="genreId" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Generos:</label>
+      <select id="genreId" name='genreId'  value={form.genreId ?? ""}
+            onChange={handleChange}
+         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+        <option value="" >Seleciona categoria</option>
+          {genres?.map(genre => 
+            <option  key={genre.id} value={genre.id}> {genre.name} </option>
+          )}
+      </select>
 
-      <div className="mb-4">
-        <InputForm
-          label="Correo de contacto"
-          name="contactEmail"
-          value={form.contactEmail}
-          onChange={handleChange}
-          placeholder="correo@ejemplo.com"
-          required={true}
-        />
-        {errorMsg?.contactEmail && <span className="text-red-500">{errorMsg.contactEmail}</span>}
-      </div>
+   
+      {errors && errors.message && <p className="text-center mt-4 text-red-500">{errors.message}</p>}
 
-      <button type="submit" className="bg-blue-600 text-white p-3 rounded-md">Guardar Serie</button>
-    </form>
-  );
-};
+      <button
+        type="submit"
+        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+      >
+        Guardar
+      </button>
+      </form>
+    </div>
+  )
+}
 
-export default SeriesForm;
+export default SeriesForm

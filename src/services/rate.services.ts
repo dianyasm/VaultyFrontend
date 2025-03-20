@@ -23,7 +23,7 @@ export class RateService {
     }
 
     static async rate(seriesId: number, value: number) {
-        return await fetchAPI(API_URL_BASE+`/offers/${seriesId}/rate`, {
+        return await fetchAPI(API_URL_BASE+`/series/${seriesId}/rate`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

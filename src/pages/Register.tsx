@@ -12,7 +12,6 @@ const Register: React.FC = () => {
     surname: "",
     email: "",
     password: "",
-    course: "",
     acceptNotifications: false,
   });
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
@@ -28,7 +27,7 @@ const Register: React.FC = () => {
       await AuthService.registerUser(form);
 
       toast.success("Usuario registrado con éxito!");
-      navigate("/offers");
+      navigate("/series");
     } catch (error) {
       toast.error("Error al registrar el usuario.");
 
@@ -78,7 +77,7 @@ const Register: React.FC = () => {
         <div className="flex items-center h-5">
           <input
             id="acceptNotifications"
-            name="accepNotifications"
+            name="acceptNotifications"
             type="checkbox"
             value={form.acceptNotifications ? "on" : "off"}
             onChange={handleChangeCheckbox}
@@ -88,19 +87,19 @@ const Register: React.FC = () => {
        
         <label
           htmlFor="remember"
-          className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+          className="ms-2 text-sm font-medium text-gray-900 dark:text-amber-100"
         >
           Aceptas recibir notificaciones?
         </label>
-        {errors.acceptNotifications && <p className="mt-2 text-sm text-red-600 dark:text-red-500"> {errors.accepNotifications}</p> }
+        {errors.acceptNotifications && <p className="mt-2 text-sm text-red-600 dark:text-red-500"> {errors.acceptNotifications}</p> }
 
       </div>
       {errors && errors.message && <p className="text-center mt-4 text-red-500">{errors.message}</p>}
       <button
         type="submit"
-        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-red-900 dark:hover:bg-red-800 dark:focus:ring-blue-800"
       >
-        Submit
+        Registrar
       </button>
     </form>
   );

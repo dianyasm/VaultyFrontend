@@ -17,7 +17,7 @@ function Profile() {
   }, []);
 
   return (
-    <div className="max-w-md mx-auto bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
+    <div className="max-w-md my-3 bg-amber- dark:bg-amber-900 shadow-md rounded-lg p-6">
       <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
         Perfil de Usuario
       </h2>
@@ -42,10 +42,6 @@ function Profile() {
             <div>
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Rol</p>
               <p className="text-lg font-semibold text-gray-900 dark:text-white">{user.role}</p>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Curso</p>
-              <p className="text-lg font-semibold text-gray-900 dark:text-white">{user.course}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Activado</p>

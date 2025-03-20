@@ -54,7 +54,7 @@ static async delete(id:number){
         headers:{
             'Content-Type': 'application/json'
         },
-        credentials: 'Include'
+        credentials: 'include'
     })
 }
 }
